@@ -21,16 +21,29 @@ export default function DocumentsPage() {
     setError(null);
     
     try {
+      const toBase64 = (f: File) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(f);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
+      
+      let base64Data = "";
+      if (file.name !== "demo-rental-agreement.pdf") {
+        const base64Str = await toBase64(file);
+        base64Data = base64Str.split(",")[1];
+      }
+
       const response = await fetch("/api/document/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // We only send metadata to simulate upload for the MVP
         body: JSON.stringify({ 
           fileName: file.name,
           fileSize: file.size,
-          fileType: file.type || "application/octet-stream"
+          fileType: file.type || "application/octet-stream",
+          fileContent: base64Data
         }),
       });
 

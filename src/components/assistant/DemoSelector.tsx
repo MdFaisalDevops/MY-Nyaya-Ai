@@ -52,8 +52,11 @@ export default function DemoSelector({ children }: DemoSelectorProps) {
           
           {/* Scenario 1: Salary */}
           <Card 
-            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+            role="button"
+            tabIndex={0}
+            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             onClick={() => handleSelectScenario("employment", "/assistant")}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSelectScenario("employment", "/assistant"); }}
           >
             <CardContent className="p-4 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
@@ -69,8 +72,11 @@ export default function DemoSelector({ children }: DemoSelectorProps) {
 
           {/* Scenario 2: Deposit */}
           <Card 
-            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+            role="button"
+            tabIndex={0}
+            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             onClick={() => handleSelectScenario("housing", "/assistant")}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSelectScenario("housing", "/assistant"); }}
           >
             <CardContent className="p-4 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
@@ -86,10 +92,18 @@ export default function DemoSelector({ children }: DemoSelectorProps) {
 
           {/* Scenario 3: Legal Notice */}
           <Card 
-            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+            role="button"
+            tabIndex={0}
+            className="cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             onClick={() => {
               setIsOpen(false);
-              router.push("/documents"); // Routes directly to document analyzer
+              router.push("/documents");
+            }}
+            onKeyDown={(e) => { 
+              if (e.key === 'Enter' || e.key === ' ') {
+                setIsOpen(false);
+                router.push("/documents");
+              }
             }}
           >
             <CardContent className="p-4 flex items-center gap-4">

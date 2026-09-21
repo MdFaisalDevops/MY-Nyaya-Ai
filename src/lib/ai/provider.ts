@@ -1,5 +1,6 @@
 import { LegalAnalysis } from "../types/legal";
 import { DEMO_SCENARIOS } from "./demo-scenarios";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /**
  * Simulates a delay to mimic network request to an AI provider.
@@ -104,6 +105,28 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
     };
   }
 
-  // TODO: Implement actual AI provider call (e.g., OpenAI, Google) when API key is present.
-  throw new Error("AI provider implementation pending. Remove the API key to use the demo mode.");
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+  try {
+    const result = await model.generateContent({
+      contents: [
+        { role: "user", parts: [{ text: prompt }] }
+      ],
+      systemInstruction: {
+        role: "system",
+        parts: [{ text: NYAYAAI_SYSTEM_PROMPT + `\n\nEnsure your response exactly matches this JSON structure (return only raw JSON, no markdown codeblocks):\n{ "triageCategory": "string", "triageExplanation": "string", "issue": "string", "summary": "string", "urgency": "string", "jurisdiction": { "country": "string", "state": "string", "city": "string" }, "knownFacts": ["string"], "missingInformation": ["string"], "possibleOptions": ["string"], "actionPlan": [{ "id": "string", "title": "string", "status": "Not started" | "In progress" | "Completed" }], "documents": ["string"], "importantDates": ["string"], "risks": ["string"], "sources": [], "confidence": "Low" | "Medium" | "High", "humanHelpRecommended": boolean, "isEmergency": boolean, "highRiskCategory": ["string"], "disclaimer": "string" }` }]
+      },
+      generationConfig: {
+        responseMimeType: "application/json",
+      }
+    });
+
+    const responseText = result.response.text();
+    const parsedData = JSON.parse(responseText);
+    return parsedData as LegalAnalysis;
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    throw new Error("Failed to generate response from Google Gemini AI.");
+  }
 }

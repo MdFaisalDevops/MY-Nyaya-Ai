@@ -15,7 +15,8 @@ const UploadSchema = z.object({
   fileSize: z.number().max(5 * 1024 * 1024, "File size must be under 5MB"),
   fileType: z.string().refine(val => ALLOWED_MIME_TYPES.includes(val), {
     message: "Invalid file type. Only PDF, DOCX, TXT, JPG, and PNG are allowed."
-  })
+  }),
+  fileContent: z.string().optional()
 });
 
 export async function POST(req: Request) {
@@ -26,7 +27,11 @@ export async function POST(req: Request) {
     const validatedData = UploadSchema.parse(body);
 
     // Call the AI provider abstraction (currently simulating network/parsing)
-    const analysis = await analyzeDocument();
+    const analysis = await analyzeDocument(
+      validatedData.fileName,
+      validatedData.fileType,
+      validatedData.fileContent
+    );
 
     return NextResponse.json(analysis);
   } catch (error) {

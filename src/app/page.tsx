@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import TrustBadge from "@/components/ui/TrustBadge";
 import { motion } from "framer-motion";
-import DemoSelector from "@/components/assistant/DemoSelector";
+import dynamic from "next/dynamic";
+const DemoSelector = dynamic(() => import("@/components/assistant/DemoSelector"), { ssr: false });
 
 export default function Home() {
   const fadeUp = {
