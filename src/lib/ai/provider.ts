@@ -106,7 +106,7 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
     const result = await model.generateContent({
@@ -123,7 +123,9 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
     });
 
     const responseText = result.response.text();
-    const parsedData = JSON.parse(responseText);
+    // Clean up potential markdown blocks if Gemini still adds them despite instructions
+    const cleanText = responseText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+    const parsedData = JSON.parse(cleanText);
     return parsedData as LegalAnalysis;
   } catch (error) {
     console.error("Gemini API Error:", error);
