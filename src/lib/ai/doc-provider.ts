@@ -59,41 +59,40 @@ const MOCK_RENTAL_AGREEMENT_ANALYSIS: DocumentAnalysis = {
   ]
 };
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function analyzeDocument(fileName: string = "unknown", fileType: string = "", fileContent?: string): Promise<DocumentAnalysis> {
-  const apiKey = process.env.AI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
 
-  if (!apiKey || !fileContent) {
+  if (!apiKey || apiKey === "YOUR_OPENAI_API_KEY_HERE" || !fileContent) {
     // Simulate network and processing delay if demo or no content
     await new Promise((resolve) => setTimeout(resolve, 2500));
     return MOCK_RENTAL_AGREEMENT_ANALYSIS;
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+  const openai = new OpenAI({ apiKey });
 
   try {
     const prompt = `Analyze the following document named "${fileName}" of type "${fileType}".\n\nDocument Content (Base64 or Text):\n${fileContent}`;
 
-    const result = await model.generateContent({
-      contents: [
-        { role: "user", parts: [{ text: prompt }] }
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: DOC_ANALYZER_SYSTEM_PROMPT + `\n\nEnsure your response exactly matches this JSON structure (return only raw JSON, no markdown codeblocks):\n{ "simpleSummary": "string", "parties": [{ "name": "string", "role": "string", "organization": "string" }], "importantDates": [{ "date": "string", "event": "string", "isDeadline": boolean }], "clauses": [{ "title": "string", "explanation": "string", "whyItMatters": "string" }], "questionsToAsk": ["string"], "attentionAreas": [{ "title": "string", "description": "string" }] }`
+        },
+        { role: "user", content: prompt }
       ],
-      systemInstruction: {
-        role: "system",
-        parts: [{ text: DOC_ANALYZER_SYSTEM_PROMPT + `\n\nEnsure your response exactly matches this JSON structure (return only raw JSON, no markdown codeblocks):\n{ "simpleSummary": "string", "parties": [{ "name": "string", "role": "string", "organization": "string" }], "importantDates": [{ "date": "string", "event": "string", "isDeadline": boolean }], "clauses": [{ "title": "string", "explanation": "string", "whyItMatters": "string" }], "questionsToAsk": ["string"], "attentionAreas": [{ "title": "string", "description": "string" }] }` }]
-      },
-      generationConfig: {
-        responseMimeType: "application/json",
-      }
+      response_format: { type: "json_object" }
     });
 
-    const responseText = result.response.text();
-    const parsedData = JSON.parse(responseText);
+    const responseText = response.choices[0].message.content || "{}";
+    const cleanText = responseText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+    const parsedData = JSON.parse(cleanText);
     return parsedData as DocumentAnalysis;
   } catch (error) {
-    console.error("Gemini Doc API Error:", error);
-    throw new Error("Failed to analyze document with Google Gemini AI.");
+    console.error("OpenAI Doc API Error:", error);
+    throw new Error("Failed to analyze document with OpenAI.");
   }
 }

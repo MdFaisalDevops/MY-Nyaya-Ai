@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import TrustBadge from "@/components/ui/TrustBadge";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import LegalAiInfoPortal from "@/components/home/LegalAiInfoPortal";
 const DemoSelector = dynamic(() => import("@/components/assistant/DemoSelector"), { ssr: false });
 
 export default function Home() {
@@ -182,6 +183,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Legal AI Info & FAQ Portal */}
+      <LegalAiInfoPortal />
 
       {/* Core Features Section */}
       <section className="py-24 bg-slate-50 dark:bg-slate-900">

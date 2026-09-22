@@ -1,6 +1,6 @@
 import { LegalAnalysis } from "../types/legal";
 import { DEMO_SCENARIOS } from "./demo-scenarios";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 /**
  * Simulates a delay to mimic network request to an AI provider.
@@ -27,11 +27,11 @@ Respond ONLY using the strict JSON schema provided.
 `;
 
 export async function generateLegalResponse(prompt: string): Promise<LegalAnalysis> {
-  const apiKey = process.env.AI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
 
   // If we have an API key, we would normally call the real provider here.
-  // For now, we will just use the demo fallback if it's missing or empty.
-  if (!apiKey) {
+  // For now, we will just use the demo fallback if it's missing, empty, or placeholder.
+  if (!apiKey || apiKey === "YOUR_OPENAI_API_KEY_HERE") {
     await delay(2000); // Simulate network latency
 
     const lowerPrompt = prompt.toLowerCase();
@@ -105,30 +105,28 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
     };
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const openai = new OpenAI({ apiKey });
 
   try {
-    const result = await model.generateContent({
-      contents: [
-        { role: "user", parts: [{ text: prompt }] }
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: NYAYAAI_SYSTEM_PROMPT + `\n\nEnsure your response exactly matches this JSON structure (return only raw JSON, no markdown codeblocks):\n{ "triageCategory": "string", "triageExplanation": "string", "issue": "string", "summary": "string", "urgency": "string", "jurisdiction": { "country": "string", "state": "string", "city": "string" }, "knownFacts": ["string"], "missingInformation": ["string"], "possibleOptions": ["string"], "actionPlan": [{ "id": "string", "title": "string", "status": "Not started" | "In progress" | "Completed" }], "documents": ["string"], "importantDates": ["string"], "risks": ["string"], "sources": [], "confidence": "Low" | "Medium" | "High", "humanHelpRecommended": boolean, "isEmergency": boolean, "highRiskCategory": ["string"], "disclaimer": "string" }`
+        },
+        { role: "user", content: prompt }
       ],
-      systemInstruction: {
-        role: "system",
-        parts: [{ text: NYAYAAI_SYSTEM_PROMPT + `\n\nEnsure your response exactly matches this JSON structure (return only raw JSON, no markdown codeblocks):\n{ "triageCategory": "string", "triageExplanation": "string", "issue": "string", "summary": "string", "urgency": "string", "jurisdiction": { "country": "string", "state": "string", "city": "string" }, "knownFacts": ["string"], "missingInformation": ["string"], "possibleOptions": ["string"], "actionPlan": [{ "id": "string", "title": "string", "status": "Not started" | "In progress" | "Completed" }], "documents": ["string"], "importantDates": ["string"], "risks": ["string"], "sources": [], "confidence": "Low" | "Medium" | "High", "humanHelpRecommended": boolean, "isEmergency": boolean, "highRiskCategory": ["string"], "disclaimer": "string" }` }]
-      },
-      generationConfig: {
-        responseMimeType: "application/json",
-      }
+      response_format: { type: "json_object" }
     });
 
-    const responseText = result.response.text();
-    // Clean up potential markdown blocks if Gemini still adds them despite instructions
+    const responseText = response.choices[0].message.content || "{}";
+    // Clean up potential markdown blocks if OpenAI still adds them despite instructions
     const cleanText = responseText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
     const parsedData = JSON.parse(cleanText);
     return parsedData as LegalAnalysis;
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to generate response from Google Gemini AI.");
+    console.error("OpenAI API Error:", error);
+    throw new Error("Failed to generate response from OpenAI.");
   }
 }
