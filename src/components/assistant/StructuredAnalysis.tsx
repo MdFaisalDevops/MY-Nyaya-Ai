@@ -155,6 +155,35 @@ export default function StructuredAnalysis({ analysis }: StructuredAnalysisProps
         </motion.div>
       )}
 
+      {/* Possible Options */}
+      {analysis.possibleOptions && analysis.possibleOptions.length > 0 && (
+        <motion.div variants={item}>
+          <Card className="shadow-sm border-indigo-100 dark:border-indigo-900/30">
+            <CardHeader className="pb-3 border-b border-indigo-100 dark:border-indigo-900/30 bg-indigo-50/30 dark:bg-indigo-950/20">
+              <CardTitle className="text-lg flex items-center gap-2 text-indigo-900 dark:text-indigo-300">
+                <HelpCircle className="w-5 h-5 text-indigo-500" />
+                Paths to Consider (Options)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <ul className="space-y-4">
+                {analysis.possibleOptions.map((option, i) => (
+                  <li key={i} className="flex gap-4 items-start bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 text-sm font-bold mt-0.5 shadow-sm">
+                      {i + 1}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-medium text-slate-800 dark:text-slate-200">Option {i + 1}</p>
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">{option}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Action Plan CTA */}
       {analysis.actionPlan.length > 0 && (
         <motion.div variants={item}>
