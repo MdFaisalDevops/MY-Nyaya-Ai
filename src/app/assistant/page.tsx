@@ -3,7 +3,12 @@
 import { useState } from "react";
 import PageHeader from '@/components/layout/PageHeader';
 import AssistantChat from "@/components/assistant/AssistantChat";
-import StructuredAnalysis from "@/components/assistant/StructuredAnalysis";
+import dynamic from "next/dynamic";
+
+const StructuredAnalysis = dynamic(() => import("@/components/assistant/StructuredAnalysis"), {
+  loading: () => <div className="animate-pulse h-96 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>,
+  ssr: false
+});
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import { LegalAnalysis } from "@/lib/types/legal";
 import { AlertCircle } from "lucide-react";

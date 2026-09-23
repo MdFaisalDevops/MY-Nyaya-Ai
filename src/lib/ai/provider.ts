@@ -74,6 +74,14 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
     if (lowerPrompt.includes("deposit") || lowerPrompt.includes("landlord") || lowerPrompt.includes("rent")) {
       return DEMO_SCENARIOS["rental"];
     }
+
+    if (lowerPrompt.includes("defective") || lowerPrompt.includes("seller") || lowerPrompt.includes("consumer") || lowerPrompt.includes("refund")) {
+      return DEMO_SCENARIOS["consumer_dispute"];
+    }
+
+    if (lowerPrompt.includes("scam") || lowerPrompt.includes("fraud") || lowerPrompt.includes("hacked") || lowerPrompt.includes("stolen")) {
+      return DEMO_SCENARIOS["cybercrime"];
+    }
     
     if (lowerPrompt.includes("notice") || lowerPrompt.includes("sued") || lowerPrompt.includes("court")) {
       return DEMO_SCENARIOS["legal_notice"];
@@ -125,8 +133,11 @@ export async function generateLegalResponse(prompt: string): Promise<LegalAnalys
     const cleanText = responseText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
     const parsedData = JSON.parse(cleanText);
     return parsedData as LegalAnalysis;
-  } catch (error) {
+  } catch (error: any) {
     console.error("OpenAI API Error:", error);
+    if (error?.status === 429 || error?.code === 'insufficient_quota' || error?.message?.includes("credits")) {
+      throw new Error(error.message || "OpenAI API quota exceeded or no credits remaining.");
+    }
     throw new Error("Failed to generate response from OpenAI.");
   }
 }

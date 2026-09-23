@@ -140,5 +140,96 @@ export const DEMO_SCENARIOS: Record<string, LegalAnalysis> = {
     isEmergency: true,
     highRiskCategory: ["legal notices", "urgent deadlines"],
     disclaimer: "NyayaAI provides AI-generated legal information and assistance. It is not a law firm and does not replace qualified legal advice."
+  },
+  "consumer_dispute": {
+    triageCategory: "Consumer",
+    triageExplanation: "This issue involves a dispute between a consumer and a business regarding a product or service.",
+    issue: "Defective product or service deficiency",
+    summary: "You indicated that you received a defective product or deficient service and the seller is not cooperating.",
+    urgency: "Normal",
+    jurisdiction: { country: "India" },
+    knownFacts: [
+      "A product or service was purchased.",
+      "The product is defective or the service is deficient.",
+      "The seller or service provider has been unresponsive or unhelpful."
+    ],
+    missingInformation: [
+      "Do you have the original receipt or invoice?",
+      "When was the purchase made?",
+      "Have you communicated your complaint in writing to the seller?"
+    ],
+    possibleOptions: [
+      "Send a formal written complaint or legal notice to the seller.",
+      "File a grievance on the National Consumer Helpline.",
+      "File a consumer complaint in the District Consumer Disputes Redressal Commission."
+    ],
+    actionPlan: [
+      { id: "step-1", title: "Gather proof of purchase and warranty", status: "Not started", evidenceRequired: ["Invoice, receipt, or warranty card"] },
+      { id: "step-2", title: "Document the defect or deficiency", status: "Not started", evidenceRequired: ["Photos, videos, or expert opinions"] },
+      { id: "step-3", title: "Send a formal legal notice to the company", status: "Not started", evidenceRequired: [] },
+      { id: "step-4", title: "Register a complaint on INGRAM (National Consumer Helpline)", status: "Not started", evidenceRequired: [] }
+    ],
+    documents: [
+      "Invoice or receipt",
+      "Warranty or guarantee card",
+      "Communication history with the seller",
+      "Photographs or videos of the defect"
+    ],
+    importantDates: [],
+    risks: [
+      "Consumer complaints must generally be filed within two years from the cause of action."
+    ],
+    sources: [
+      { id: "consumer_protection_act", title: "Consumer Protection Act, 2019", status: "Verified source" }
+    ],
+    confidence: "High",
+    humanHelpRecommended: false,
+    isEmergency: false,
+    disclaimer: "NyayaAI provides AI-generated legal information and assistance. It is not a law firm and does not replace qualified legal advice."
+  },
+  "cybercrime": {
+    triageCategory: "Cybercrime",
+    triageExplanation: "This matter relates to online fraud, financial scams, or unauthorized access.",
+    issue: "Online financial fraud or cybercrime",
+    summary: "You have reported a potential online scam, financial fraud, or unauthorized transaction.",
+    urgency: "Urgent",
+    jurisdiction: { country: "India" },
+    knownFacts: [
+      "An online transaction or interaction took place.",
+      "Money was lost or unauthorized access occurred."
+    ],
+    missingInformation: [
+      "When exactly did the fraud occur?",
+      "Which platform or bank was involved?",
+      "Do you have screenshots of the transaction or communication?"
+    ],
+    possibleOptions: [
+      "Immediately freeze your bank accounts or credit cards.",
+      "Report the incident to the National Cyber Crime Reporting Portal.",
+      "File an FIR at your local Cyber Crime police station."
+    ],
+    actionPlan: [
+      { id: "step-1", title: "Call your bank/wallet to block your account/card immediately", status: "Not started", evidenceRequired: [] },
+      { id: "step-2", title: "Call the national cybercrime helpline (1930 in India)", status: "Not started", evidenceRequired: [] },
+      { id: "step-3", title: "Take screenshots of all fraudulent transactions and chats", status: "Not started", evidenceRequired: ["Screenshots", "Bank statements"] },
+      { id: "step-4", title: "Register a complaint at cybercrime.gov.in", status: "Not started", evidenceRequired: [] }
+    ],
+    documents: [
+      "Bank account statements showing the fraudulent transaction",
+      "Screenshots of chats, emails, or SMS",
+      "Details of the suspected fraudulent account or phone number"
+    ],
+    importantDates: [],
+    risks: [
+      "Delaying the report to your bank may result in you being held liable for the lost funds."
+    ],
+    sources: [
+      { id: "information_technology_act", title: "Information Technology Act, 2000", status: "Verified source" },
+      { id: "rbi_guidelines", title: "RBI Guidelines on Customer Liability", status: "Verified source" }
+    ],
+    confidence: "High",
+    humanHelpRecommended: true,
+    isEmergency: false,
+    disclaimer: "NyayaAI provides AI-generated legal information and assistance. It is not a law firm and does not replace qualified legal advice."
   }
 };

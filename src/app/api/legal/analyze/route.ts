@@ -107,8 +107,11 @@ export async function POST(req: Request) {
       );
     }
 
+    // Capture standard error messages (like rate limit exhaustion)
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during analysis. Please try again.";
+
     return NextResponse.json(
-      { error: "An unexpected error occurred during analysis. Please try again." },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -31,9 +31,8 @@ function PrivacyControls({ onClearSession }: { onClearSession?: () => void }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-900 dark:hover:text-slate-100" />}>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Privacy Settings" className="text-slate-500 hover:text-slate-900 dark:hover:text-slate-100" />}>
         <Settings2 className="w-5 h-5" />
-        <span className="sr-only">Privacy Settings</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>Privacy & Data</DropdownMenuLabel>
@@ -94,7 +93,9 @@ export default function AssistantChat({ onAnalyze, isLoading, onClearSession }: 
               {[
                 "My employer hasn't paid my salary.",
                 "My landlord won't return my security deposit.",
-                "I received a formal legal notice today."
+                "I received a formal legal notice today.",
+                "I received a defective product and the seller refuses a refund.",
+                "I was scammed online and lost money from my account."
               ].map((example, i) => (
                 <Button 
                   key={i} 
@@ -143,11 +144,11 @@ export default function AssistantChat({ onAnalyze, isLoading, onClearSession }: 
             <Button 
               type="submit" 
               size="icon" 
+              aria-label="Analyze My Situation"
               disabled={!prompt.trim() || isLoading}
               className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all"
             >
               <ArrowUp className="w-5 h-5" />
-              <span className="sr-only">Analyze My Situation</span>
             </Button>
           </div>
         </form>
