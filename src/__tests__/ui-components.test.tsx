@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { ConfidenceBadge } from '@/components/ui/ConfidenceBadge';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import EmptyState from '@/components/ui/EmptyState';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import StatusBadge from '@/components/ui/StatusBadge';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 describe('UI Components', () => {
   describe('Button', () => {
