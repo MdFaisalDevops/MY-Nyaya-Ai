@@ -68,15 +68,15 @@ describe('UI Components', () => {
 
   describe('StatusBadge', () => {
     it('renders status correctly', () => {
-      render(<StatusBadge status="Completed" />);
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      render(<StatusBadge status="completed">Completed Status</StatusBadge>);
+      expect(screen.getByText('Completed Status')).toBeInTheDocument();
     });
   });
 
   describe('ProgressBar', () => {
     it('renders progress value', () => {
-      render(<ProgressBar progress={50} aria-label="Loading progress" />);
-      expect(screen.getByRole('progressbar', { name: /loading progress/i })).toHaveAttribute('aria-valuenow', '50');
+      render(<ProgressBar completed={5} total={10} />);
+      expect(screen.getByText('5 of 10 steps completed (50%)')).toBeInTheDocument();
     });
   });
 });
